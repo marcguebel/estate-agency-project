@@ -19,6 +19,6 @@ The WordPress Plugin Estate-Agency-Project includes the following files:
 The Estate-Agency-Project can be installed directly into your plugins folder "as-is".
 
 * download the github directory
-* direct add it via back office or upload it via FTP in `wp-content/plugins` folder
+* add it directly via back office or upload it via FTP in `wp-content/plugins` folder
 
 It's safe to activate the plugin at this point.

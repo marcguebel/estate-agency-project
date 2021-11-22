@@ -56,7 +56,8 @@ class Estate_Agency_Project {
 	 * @since    1.0.0
 	 */
 	public function run() {
-		$this->loadHook();
+		$this->load_hook();
+		$this->add_filter();
 	}
 
 	/**
@@ -84,16 +85,33 @@ class Estate_Agency_Project {
 	 *
 	 * @since    1.0.0
 	 */
-	public function loadHook() {
-		//add custom post type
+	public function load_hook() {
+		// add custom post type
 		add_action( 'init', [$this, 'eap_create_posttype']);
 
-		//custom field for previous post type
+		// add css
+		add_action( 'init', [$this, 'eap_add_css']);
+
+		// custom field for previous post type
 		add_action( 'add_meta_boxes', [$this, 'eap_set_meta_box']);
 		add_action( 'save_post', [$this, 'eap_save_custom_field']);
 
-		//add page to previous custom type
+		// add page to previous custom type
 		add_action('admin_menu', [$this, 'eap_link_menu']);
+
+		// change defaut post type
+		add_action('pre_get_posts', [$this, 'eap_update_default_post_type']);
+	}
+
+	/**
+	 * load all the plugin filter used 
+	 *
+	 * @since    1.0.0
+	 */
+	public function add_filter() {
+		// Filter the template for the custom post type real estate
+		add_filter('single_template', [$this, 'eap_single_real_estate_template']);
+		add_filter('archive_template', [$this, 'eap_archive_real_estate_template']);
 	}
 
 	/**
@@ -102,6 +120,7 @@ class Estate_Agency_Project {
 	 * @since     1.0.0
 	 */
 	function eap_create_posttype() {
+
 		// Set UI labels for Custom Post Type
 	    $labels = [
 	        'name'                => 'Biens immobiliers',
@@ -124,7 +143,7 @@ class Estate_Agency_Project {
 	        'show_in_rest' 		  => false,
 			'hierarchical'        => false,
 			'public'              => true,
-			'has_archive'         => false,
+			'has_archive'         => true,
 	        'menu_position'       => 5,
 	        'menu_icon'      	  => 'dashicons-admin-home',
         	'supports'            => ['title', 'thumbnail'],
@@ -132,6 +151,16 @@ class Estate_Agency_Project {
 	     
 	    // Registering your Custom Post Type
 	    register_post_type( 'real_estate', $args );
+	}
+
+	/**
+	 * Add css, for the front-end 
+	 *
+	 * @since     1.0.0
+	 */
+	public function eap_add_css() {
+		wp_register_style('css', plugins_url('/css/style.css',__DIR__ ));
+	    wp_enqueue_style('css');
 	}
 
 	/**
@@ -460,4 +489,59 @@ class Estate_Agency_Project {
 
 		return $attach_id;
 	}
+
+	/**
+	 * change default post type
+	 *
+	 * @param 	  object  	$query
+	 * @since     1.0.0
+	 */
+	function eap_update_default_post_type( $query ) {
+		if ( ! is_admin() && $query->is_main_query() ) {
+			//set default post type
+	    	if ( $query->is_home )
+	    		$query->set('post_type', ['post', 'real_estate']);
+	    	if ( $query->is_search )
+		    	$query->set('post_type', ['post', 'real_estate']);
+	  	}
+	}
+
+	/**
+	 * set the single template for the custom post type real estate
+	 *
+	 * @param 	  string  	$template
+	 * @since     1.0.0
+	 * @return    string 	$template
+	 */
+	function eap_single_real_estate_template( $template ) {
+	    global $post;
+
+	    // Checks for single template by post type 
+	    if ( $post->post_type == 'real_estate' ) {
+	        if ( file_exists( __DIR__ . "/../templates/single-real-estate.php" ) )
+	            $template =__DIR__ . "/../templates/single-real-estate.php";
+	    }
+
+	    return $template;
+	}
+
+	/**
+	 * set the archive template for the custom post type real estate
+	 *
+	 * @since     1.0.0
+	 * @param 	  string  	$template
+	 * @return    string 	$template
+	 */
+	function eap_archive_real_estate_template( $template ) {
+	    global $post;
+
+	     // Checks for archive template by query name 
+	    if ( get_queried_object()->name == 'real_estate' ) {
+	        if ( file_exists( __DIR__ . "/../templates/archive-real-estate.php" ) )
+	            $template =__DIR__ . "/../templates/archive-real-estate.php";
+	    }
+
+	    return $template;
+	}
+
 }

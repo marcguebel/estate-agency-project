@@ -1,0 +1,46 @@
+.eap-container{
+	width: 80%;
+	margin: auto;
+}
+
+.eap-container > article{
+	display: flex;
+	cursor: pointer;
+	margin-top: 50px;
+	border-bottom:  3px #242424b8 solid
+}
+
+.eap-container > article:first-child{
+	margin-top: initial;
+}
+
+.eap-img{
+	width: 500px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	height: 100%;
+}
+
+.eap-data{
+	width: 100%;
+	padding-right: 10px;
+	padding-left: 10px;
+	color: black;
+}
+
+.eap-data > h2 > a{
+	text-decoration: none;
+}
+
+.eap-data > h2 {
+	font-size: 28px;
+}
+
+article:hover > .eap-data > h2 > a{
+	color: #ffae00;
+	transition: all 0.2s ease-out;
+}
+
+.eap-pagination{
+	text-align: center;
+}

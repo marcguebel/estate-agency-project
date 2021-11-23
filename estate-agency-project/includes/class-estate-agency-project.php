@@ -87,20 +87,20 @@ class Estate_Agency_Project {
 	 */
 	public function load_hook() {
 		// add custom post type
-		add_action( 'init', [$this, 'eap_create_posttype']);
+		add_action( 'init', [$this, 'eap_create_posttype'] );
 
 		// add css
-		add_action( 'init', [$this, 'eap_add_css']);
+		add_action( 'init', [$this, 'eap_add_css'] );
 
 		// custom field for previous post type
-		add_action( 'add_meta_boxes', [$this, 'eap_set_meta_box']);
-		add_action( 'save_post', [$this, 'eap_save_custom_field']);
+		add_action( 'add_meta_boxes', [$this, 'eap_set_meta_box'] );
+		add_action( 'save_post', [$this, 'eap_save_custom_field'] );
 
 		// add page to previous custom type
-		add_action('admin_menu', [$this, 'eap_link_menu']);
+		add_action( 'admin_menu', [$this, 'eap_link_menu'] );
 
 		// change defaut post type
-		add_action('pre_get_posts', [$this, 'eap_update_default_post_type']);
+		add_action( 'pre_get_posts', [$this, 'eap_update_default_post_type'] );
 	}
 
 	/**
@@ -110,8 +110,8 @@ class Estate_Agency_Project {
 	 */
 	public function add_filter() {
 		// Filter the template for the custom post type real estate
-		add_filter('single_template', [$this, 'eap_single_real_estate_template']);
-		add_filter('archive_template', [$this, 'eap_archive_real_estate_template']);
+		add_filter( 'single_template', [$this, 'eap_single_real_estate_template'] );
+		add_filter( 'archive_template', [$this, 'eap_archive_real_estate_template'] );
 	}
 
 	/**
@@ -159,8 +159,8 @@ class Estate_Agency_Project {
 	 * @since     1.0.0
 	 */
 	public function eap_add_css() {
-		wp_register_style('css', plugins_url('/css/style.css',__DIR__ ));
-	    wp_enqueue_style('css');
+		wp_register_style( 'css', plugins_url( '/css/style.css',__DIR__ ) );
+	    wp_enqueue_style( 'css' );
 	}
 
 	/**
@@ -211,7 +211,7 @@ class Estate_Agency_Project {
 						//build dynamic option based on const nature
 						foreach ( Estate_Agency_Project::NATURE as $nature ) {
 							$selected="";
-							if( $eap_nature == $nature )
+							if ( $eap_nature == $nature )
 								$selected="selected";
 							echo "<option value='".$nature."' ".$selected." >".$nature."</option>";
 						}
@@ -250,24 +250,19 @@ class Estate_Agency_Project {
 	    /* OK, it's safe to save the data now. */
 
 	    //save each custom post meta
-	    if ( isset( $_POST['eap_price'] ) ) {
-		    // Update the meta field in the database.
+		// Update the meta field in the database.
+	    if ( isset( $_POST['eap_price'] ) )
 		    update_post_meta( $post_id, 'eap_price', sanitize_text_field( $_POST['eap_price'] ) );
-	    }
 
-	    if ( isset( $_POST['eap_area'] ) ) {
-		    // Update the meta field in the database.
+	    if ( isset( $_POST['eap_area'] ) )
 		    update_post_meta( $post_id, 'eap_area', sanitize_text_field( $_POST['eap_area'] ) );
-	    }
 
-	    if ( isset( $_POST['eap_city'] ) ) {
-		    // Update the meta field in the database.
+	    if ( isset( $_POST['eap_city'] ) )
 		    update_post_meta( $post_id, 'eap_city', sanitize_text_field( $_POST['eap_city'] ) );
-	    }
 
 	    if ( isset( $_POST['eap_nature'] ) ) {
 	    	//check if value is in const NATURE
-	    	if( in_array( $_POST['eap_nature'], Estate_Agency_Project::NATURE )){
+	    	if ( in_array( $_POST['eap_nature'], Estate_Agency_Project::NATURE )){
 		    	// Update the meta field in the database.
 		    	update_post_meta( $post_id, 'eap_nature', sanitize_text_field( $_POST['eap_nature'] ) );
 	    	}
@@ -307,7 +302,7 @@ class Estate_Agency_Project {
 		<?php 
 
 		//bind function for post traitement
-	    if( isset( $_POST['submit'] ) )
+	    if ( isset( $_POST['submit'] ) )
 	    	$this->eap_post_file();
 	}
 
@@ -319,14 +314,14 @@ class Estate_Agency_Project {
 	function eap_post_file() {
 
 		//note : this is really minimalist test. 
-		if( $_FILES['jsonFile']['type'] != "application/json" )
+		if ( $_FILES['jsonFile']['type'] != "application/json" )
             return;
 
         //note : actually if the server cant read the file before timeout, there will be a problem. To avoid this a solution is to fragment the file and do it in several ajax calls. Actually for 2mo JSON file the server can respond.
     	$json = json_decode( file_get_contents( $_FILES['jsonFile']['tmp_name'] ) );
 
     	//check if the format of the json is ok
-    	if( ! isset( $json->data ) )
+    	if ( ! isset( $json->data ) )
             return;
 
     	echo "<h2>Traitement de " . count( $json->data ) . " biens immobiliers</h2>";
@@ -334,32 +329,32 @@ class Estate_Agency_Project {
     	?>
     	<table><th>Titre</th><th>Prix</th><th>Surface</th><th>Ville</th><th>Nature du bien</th>
 	    	<?php
-	    	$i=0;
+	    	$i = 0;
 	    	foreach ( $json->data as $index => $j) {
-	    		$titre="Bien sans titre Nᵒ" . $index;
-	    		if( isset( $j->info->titre ) && $j->info->titre != "" )
+	    		$titre = "Bien sans titre Nᵒ" . $index;
+	    		if ( isset( $j->info->titre ) && $j->info->titre != "" )
 	    			$titre=$j->info->titre;
 
-	    		$prix="Non spécifié";
-	    		if( isset( $j->prix->budget ) && $j->prix->budget != "" )
+	    		$prix = "Non spécifié";
+	    		if ( isset( $j->prix->budget ) && $j->prix->budget != "" )
 	    			$prix=$j->prix->budget;
 
-	    		$surface="Non spécifié";
-	    		if( isset( $j->info->surface ) && $j->info->surface != "" )
+	    		$surface = "Non spécifié";
+	    		if ( isset( $j->info->surface ) && $j->info->surface != "" )
 	    			$surface=$j->info->surface;
 
-	    		$ville="Non spécifié";
-	    		if( isset( $j->localisation->ville ) && $j->localisation->ville != "" )
+	    		$ville = "Non spécifié";
+	    		if ( isset( $j->localisation->ville ) && $j->localisation->ville != "" )
 	    			$ville=$j->localisation->ville;
 
-	    		$nature="Non spécifié";
-	    		if( isset( $j->info->nature ) && $j->info->nature != "" )
+	    		$nature = "Non spécifié";
+	    		if ( isset( $j->info->nature ) && $j->info->nature != "" )
 	    			$nature=$j->info->nature;
 
-	    		$img=null;
-	    		$index=1;
-	    		if( isset( $j->photos->$index->url ) && $j->photos->$index->url != "" )
-	    			$img=$j->photos->$index->url;
+	    		$img = null;
+	    		$index = 1;
+	    		if ( isset( $j->photos->$index->url ) && $j->photos->$index->url != "" )
+	    			$img = $j->photos->$index->url;
 	    		?>
 	    		<tr>
 	    			<td><?php echo $titre; ?></td>
@@ -370,7 +365,7 @@ class Estate_Agency_Project {
 	    		</tr>
 	    		<?php 
 	    		//save 
-	    		$this->setRealEstate($titre, $prix, $surface, $ville, $nature, $img );
+	    		$this->setRealEstate( $titre, $prix, $surface, $ville, $nature, $img );
 	    	}
 	    	?>
     	</table>
@@ -412,7 +407,7 @@ class Estate_Agency_Project {
 
 	    //step 2 insert multi line in postmeta
 		//if $res that meen we can insert value
-		$post_id=null;
+		$post_id = null;
 		if ( $res ) {
 			$post_id = $wpdb->insert_id;
 			// insert post meta
@@ -423,13 +418,13 @@ class Estate_Agency_Project {
 		}
 
 		//step 3 Thumbnail
-		if( $res ) {
+		if ( $res ) {
 			$attach_id = $this->crb_insert_attachment_from_url( $img, $post_id );
 			set_post_thumbnail( $post_id, $attach_id );
 		}
 
 		//Display query for debuging
-		/*if( $wpdb->last_error !== '' ) { 
+		/*if ( $wpdb->last_error !== '' ) { 
         	$query = htmlspecialchars( $wpdb->last_query, ENT_QUOTES );
         	print "<code>$query</code>";
 
@@ -447,18 +442,18 @@ class Estate_Agency_Project {
 	 * @return    Int    	Attachment ID
 	 */
 	function crb_insert_attachment_from_url($url, $parent_post_id = null) {
-		if( !class_exists( 'WP_Http' ) )
+		if ( !class_exists( 'WP_Http' ) )
 			include_once( ABSPATH . WPINC . '/class-http.php' );
 
 		$http = new WP_Http();
 		$response = $http->request( $url );
-		if( $response['response']['code'] != 200 )
+		if ( $response['response']['code'] != 200 )
 			return false;
 
 		$basename=str_replace("[", "", $url);
 		$basename=str_replace("]", "", $url);
 		$upload = wp_upload_bits( basename($basename), null, $response['body'] );
-		if( !empty( $upload['error'] ) )
+		if ( !empty( $upload['error'] ) )
 			return false;
 
 		$file_path = $upload['file'];
@@ -519,7 +514,7 @@ class Estate_Agency_Project {
 	    // Checks for single template by post type 
 	    if ( $post->post_type == 'real_estate' ) {
 	        if ( file_exists( __DIR__ . "/../templates/single-real-estate.php" ) )
-	            $template =__DIR__ . "/../templates/single-real-estate.php";
+	            $template = __DIR__ . "/../templates/single-real-estate.php";
 	    }
 
 	    return $template;
@@ -538,10 +533,9 @@ class Estate_Agency_Project {
 	     // Checks for archive template by query name 
 	    if ( get_queried_object()->name == 'real_estate' ) {
 	        if ( file_exists( __DIR__ . "/../templates/archive-real-estate.php" ) )
-	            $template =__DIR__ . "/../templates/archive-real-estate.php";
+	            $template = __DIR__ . "/../templates/archive-real-estate.php";
 	    }
 
 	    return $template;
 	}
-
 }

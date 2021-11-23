@@ -1,46 +1,70 @@
-.eap-container{
+/****** START archive page real estate ******/
+
+.eap-archive-container{
 	width: 80%;
 	margin: auto;
 }
 
-.eap-container > article{
+.eap-archive-container > article{
 	display: flex;
 	cursor: pointer;
 	margin-top: 50px;
-	border-bottom:  3px #242424b8 solid
+	border-bottom:  3px #24242463 solid
 }
 
-.eap-container > article:first-child{
+.eap-archive-container > article:first-child{
 	margin-top: initial;
 }
 
-.eap-img{
+.eap-archive-img{
 	width: 500px;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding: 10px 0px 10px 0px;
 	height: 100%;
 }
 
-.eap-data{
+.eap-archive-data{
 	width: 100%;
-	padding-right: 10px;
-	padding-left: 10px;
+	padding: 0px 10px 0px 10px;
 	color: black;
 }
 
-.eap-data > h2 > a{
+.eap-archive-data > h2 > a{
 	text-decoration: none;
 }
 
-.eap-data > h2 {
+.eap-archive-data > h2 {
 	font-size: 28px;
 }
 
-article:hover > .eap-data > h2 > a{
+article:hover > .eap-archive-data > h2 > a{
 	color: #ffae00;
 	transition: all 0.2s ease-out;
 }
 
-.eap-pagination{
-	text-align: center;
+/****** END archive page real estate ******/
+/****** START single real estate page ******/
+
+.eap-single-title{
+	font-size: 50px;
+	padding-top: 25px;
 }
+
+.eap-single-header{
+	padding-bottom: 25px;
+	border-bottom:  2px #24242463 solid
+}
+
+.eap-single-article{
+	max-width: 1240px;
+	margin: auto;
+}
+
+.eap-single-info{
+	font-size: 22px;
+}
+
+.eap-single-title-span{
+	font-weight: bold;
+}
+
+/****** END single real estate page ******/
